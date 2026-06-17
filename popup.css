@@ -1,8 +1,6 @@
-﻿
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-
     --bg-color: #f6f8f2;
     --card-bg: #eef2e6;
     --text-primary: #191c17;
@@ -34,7 +32,6 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-
         --bg-color: #1a1c18;
         --card-bg: #22251f;
         --text-primary: #e3e3dc;
@@ -80,7 +77,6 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-
 .card {
     background-color: var(--card-bg);
     border: none;
@@ -93,7 +89,6 @@ body {
     transition: background-color 0.3s ease;
 }
 
-
 .header {
     display: flex;
     justify-content: space-between;
@@ -105,7 +100,6 @@ body {
     align-items: center;
     gap: 10px;
 }
-
 
 .chrome-logo-icon {
     width: 20px;
@@ -144,7 +138,6 @@ body {
     font-weight: 400;
 }
 
-
 .status-badge {
     display: flex;
     align-items: center;
@@ -179,7 +172,6 @@ body {
     0% { opacity: 0.3; }
     100% { opacity: 1; }
 }
-
 
 .main-content {
     display: flex;
@@ -237,7 +229,6 @@ body {
     font-weight: 500;
 }
 
-
 .settings-section {
     display: flex;
     flex-direction: column;
@@ -283,7 +274,6 @@ label {
     align-items: center;
     width: 100%;
 }
-
 
 input[type="password"],
 input[type="text"] {
@@ -355,7 +345,6 @@ textarea:focus {
     padding-left: 6px;
 }
 
-
 .setting-row {
     display: flex;
     justify-content: space-between;
@@ -381,7 +370,6 @@ textarea:focus {
     font-size: 12px;
     color: var(--text-secondary);
 }
-
 
 .switch {
     position: relative;
@@ -429,11 +417,9 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(20px);
     background-color: var(--toggle-knob-on);
-
     width: 24px;
     height: 24px;
 }
-
 
 .select-wrapper {
     position: relative;
@@ -453,7 +439,6 @@ select {
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-
     background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
     background-repeat: no-repeat;
     background-position: right 12px center;
@@ -471,7 +456,6 @@ select:focus {
     outline: 2px solid var(--primary-hover);
 }
 
-
 .mini-select {
     width: 110px;
     flex-shrink: 0;
@@ -483,7 +467,6 @@ select:focus {
     font-size: 13px;
     border-radius: 12px;
 }
-
 
 .footer {
     border-top: 1px solid rgba(0, 0, 0, 0.05);
@@ -570,7 +553,6 @@ select:focus {
     transform: scale(1.1);
 }
 
-
 .navigation-bar {
     display: flex;
     justify-content: space-around;
@@ -638,8 +620,6 @@ select:focus {
     width: 100%;
 }
 
-
 .hidden {
     display: none !important;
 }
-

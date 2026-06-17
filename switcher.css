@@ -1,4 +1,10 @@
-/*Franco Senes - 16/6/2026 - zero.info.bo*/
+:where(#tabflow-switcher-overlay, #tabflow-switcher-overlay *) {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
 #tabflow-switcher-overlay {
     --tf-font: 'Outfit', system-ui, -apple-system, sans-serif;
 
@@ -42,7 +48,6 @@
     to { transform: scale(1); opacity: 1; }
 }
 
-
 .tabflow-search-container {
     display: flex;
     align-items: center;
@@ -82,7 +87,6 @@
     opacity: 0.7;
 }
 
-
 .tabflow-list-container {
     display: flex;
     flex-direction: row;
@@ -93,7 +97,6 @@
     min-height: 180px;
     scroll-behavior: smooth;
 }
-
 
 .tabflow-list-container::-webkit-scrollbar {
     height: 6px;
@@ -117,7 +120,6 @@
     width: 100%;
 }
 
-
 .tabflow-tab-item {
     display: flex;
     flex-direction: column;
@@ -140,13 +142,11 @@
     border-color: var(--tf-accent-hover);
 }
 
-
 .tabflow-tab-item.tabflow-active {
     border-color: var(--tf-accent) !important;
     background: var(--tf-bg-card-elevated);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--tf-accent);
 }
-
 
 .tabflow-card-header {
     display: flex;
@@ -185,7 +185,6 @@
     border-radius: 4px;
 }
 
-
 .tabflow-close-btn {
     background: transparent !important;
     border: none !important;
@@ -215,7 +214,6 @@
     height: 12px !important;
     stroke-width: 2.5 !important;
 }
-
 
 .tabflow-card-body {
     display: flex;
@@ -271,7 +269,6 @@
     }
 }
 
-
 .tabflow-group-badge {
     font-size: 9px;
     font-weight: 700;
@@ -322,6 +319,7 @@
 }
 
 .tabflow-branding {
+    color: var(--tf-text-primary);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: -0.4px;

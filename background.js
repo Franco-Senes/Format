@@ -18,7 +18,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 function initializeTabHistory() {
     chrome.tabs.query({}, (tabs) => {
-
+        tabHistory = tabs.map(t => t.id);
     });
 }
 
@@ -41,11 +41,9 @@ function updateHistory(tabId) {
 
 async function ensureScriptInjected(tabId){
     try {
-        // Try sending a ping to see if content script is already there
         await chrome.tabs.sendMessage(tabId, { action: 'ping' });
         return true;
     } catch (err) {
-
         console.log(`injecting change window script ${tabId}...`);
         try {
             await chrome.scripting.executeScript({
@@ -70,9 +68,7 @@ chrome.commands.onCommand.addListener(async (command) => {
         if (activeTabs.length === 0) return;
         const activeTab = activeTabs[0];
 
-        // Get all tabs in current window
         const windowTabs = await chrome.tabs.query({ currentWindow: true });
-        // filter websites where it can be injected
         const validWindowTabs = windowTabs.filter(tab =>
             tab.url &&
             !tab.url.startsWith('chrome://') &&
@@ -86,6 +82,9 @@ chrome.commands.onCommand.addListener(async (command) => {
             console.log('cant not inject to system windows');
             return;
         }
+
+        const injected = await ensureScriptInjected(activeTab.id);
+        if (!injected) return;
 
         validWindowTabs.sort((a, b) => {
             const idxA = tabHistory.indexOf(a.id);
@@ -119,6 +118,13 @@ chrome.commands.onCommand.addListener(async (command) => {
             groupTitle: groupMap[tab.groupId]?.title || '',
             groupColor: groupMap[tab.groupId]?.color || ''
         }));
+
+        const settings = await chrome.storage.local.get({
+            language: 'en',
+            themeColor: 'blue',
+            customColorValue: '#1a73e8'
+        });
+
         chrome.tabs.sendMessage(activeTab.id, {
             action: 'toggle_switcher',
             tabs: formattedTabs,
@@ -153,14 +159,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'auto_group_tabs') {
         console.log('executing tabs grouping');
         groupTabsWithAI().catch(err => console.error('error on the automatic grouping:', err));
     }
 });
-
 
 async function setupAlarms() {
     const settings = await chrome.storage.local.get({
@@ -180,7 +184,6 @@ async function setupAlarms() {
     }
 }
 
-
 async function groupTabsWithAI() {
     const settings = await chrome.storage.local.get({
         geminiApiKey: '',
@@ -193,9 +196,7 @@ async function groupTabsWithAI() {
         throw new Error(settings.language === 'es' ? 'API Key de Gemini no configurada.' : 'Gemini API Key is not configured.');
     }
 
-
     let targetWindow = await chrome.windows.getLastFocused();
-
 
     if (!targetWindow || targetWindow.type !== 'normal') {
         const allWindows = await chrome.windows.getAll();
@@ -207,13 +208,11 @@ async function groupTabsWithAI() {
         targetWindow = normalWindows.find(w => w.focused) || normalWindows[0];
     }
 
-
     const tabs = await chrome.tabs.query({ windowId: targetWindow.id, pinned: false });
     if (tabs.length < 3) {
         console.log('way to little tabs to group atleast need 3');
         return;
     }
-
 
     const tabList = tabs.map(t => ({
         id: t.id,
@@ -237,7 +236,6 @@ CRITICAL: You must generate the group names in ENGLISH ONLY. Even if the tab tit
     }
 
     let prompt = '';
-
     if (settings.language === 'es') {
         prompt = `Analiza la siguiente lista de pestañas abiertas (con sus ID, títulos y URL) y agrúpalas en categorías lógicas y coherentes (entre 3 y 6 grupos máximo).
 Las pestañas que no encajen en ningún grupo claro déjalas fuera (no crees grupos de una sola pestaña).
@@ -313,24 +311,18 @@ ${JSON.stringify(tabList, null, 2)}`;
         }
 
         const groups = JSON.parse(responseText);
-
         const validTabIds = tabs.map(t => t.id);
-
 
         let groupedAny = false;
         let lastError = null;
 
-
         for (const group of groups) {
-
             const validColors = ["grey", "blue", "red", "yellow", "green", "pink", "purple", "cyan", "orange"];
             const color = validColors.includes(group.color) ? group.color : 'grey';
-
 
             const tabIds = group.tabIds
                 .map(id => Number(id))
                 .filter(id => !isNaN(id) && validTabIds.includes(id));
-
 
             if (tabIds.length === 0) {
                 console.warn(`[Format] no valid tabs on the group "${group.name}". skipping.`);
@@ -338,9 +330,7 @@ ${JSON.stringify(tabList, null, 2)}`;
             }
 
             try {
-
                 const groupId = await chrome.tabs.group({ tabIds: tabIds });
-
                 await chrome.tabGroups.update(groupId, {
                     title: group.name,
                     color: color

@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     if (window.tabFlowSwitcherInitialized) {
         return;
     }
@@ -15,14 +15,14 @@
 
     const switcherTranslations = {
         es: {
-            placeholder: "Buscar pestaÃ±a por tÃ­tulo o URL...",
-            tips: "<span class=\"tabflow-tip-key\">â†â†’ / Tab</span> Navegar &bull; <span class=\"tabflow-tip-key\">Enter</span> Seleccionar &bull; <span class=\"tabflow-tip-key\">Esc</span> Cerrar",
-            noResults: "No se encontraron pestaÃ±as abiertas",
-            closeBtnTitle: "Cerrar pestaÃ±a"
+            placeholder: "Buscar pestaña por título o URL...",
+            tips: "<span class=\"tabflow-tip-key\">←→ / Tab</span> Navegar &bull; <span class=\"tabflow-tip-key\">Enter</span> Seleccionar &bull; <span class=\"tabflow-tip-key\">Esc</span> Cerrar",
+            noResults: "No se encontraron pestañas abiertas",
+            closeBtnTitle: "Cerrar pestaña"
         },
         en: {
             placeholder: "Search tab by title or URL...",
-            tips: "<span class=\"tabflow-tip-key\">â†â†’ / Tab</span> Navigate &bull; <span class=\"tabflow-tip-key\">Enter</span> Select &bull; <span class=\"tabflow-tip-key\">Esc</span> Close",
+            tips: "<span class=\"tabflow-tip-key\">←→ / Tab</span> Navigate &bull; <span class=\"tabflow-tip-key\">Enter</span> Select &bull; <span class=\"tabflow-tip-key\">Esc</span> Close",
             noResults: "No open tabs found",
             closeBtnTitle: "Close tab"
         }
@@ -31,8 +31,7 @@
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === 'ping') {
             sendResponse({ status: 'pong' });
-        }
-        else if (message.action === 'toggle_switcher') {
+        } else if (message.action === 'toggle_switcher') {
             allTabs = message.tabs || [];
             currentLang = message.language || 'en';
             currentThemeColor = message.themeColor || 'blue';
@@ -54,9 +53,6 @@
         isOpen = true;
         wasCycled = false;
         filteredTabs = [...allTabs];
-
-
-
         selectedIndex = allTabs.length > 1 ? 1 : 0;
 
         let overlay = document.getElementById('tabflow-switcher-overlay');
@@ -64,17 +60,19 @@
             overlay = createOverlayDOM();
             document.body.appendChild(overlay);
         } else {
-            
             const searchInput = document.getElementById('tabflow-search-input');
             const tipsDiv = overlay.querySelector('.tabflow-tips');
-            if (searchInput) searchInput.placeholder = switcherTranslations[currentLang].placeholder;
-            if (tipsDiv) tipsDiv.innerHTML = switcherTranslations[currentLang].tips;
+            if (searchInput) {
+                searchInput.placeholder = switcherTranslations[currentLang].placeholder;
+            }
+            if (tipsDiv) {
+                tipsDiv.innerHTML = switcherTranslations[currentLang].tips;
+            }
         }
 
-        
         applyThemeColors(overlay, currentThemeColor, currentCustomColorValue);
-
         overlay.classList.remove('tabflow-hidden');
+
         document.addEventListener('keydown', handleKeyDown, true);
         document.addEventListener('keyup', handleKeyUp, true);
 
@@ -84,7 +82,6 @@
 
         renderTabsList();
 
-        
         setTimeout(() => {
             searchInput.value = '';
         }, 10);
@@ -127,13 +124,10 @@
     function activateSelectedTab() {
         if (filteredTabs.length === 0 || selectedIndex < 0 || selectedIndex >= filteredTabs.length) return;
         const selectedTab = filteredTabs[selectedIndex];
-
-        
         chrome.runtime.sendMessage({
             action: 'switch_to_tab',
             tabId: selectedTab.id
         });
-
         closeSwitcher();
     }
 
@@ -142,22 +136,15 @@
             event.stopPropagation();
             event.preventDefault();
         }
-
-        
         chrome.runtime.sendMessage({
             action: 'close_tab',
             tabId: tabId
         });
-
-        
         allTabs = allTabs.filter(t => t.id !== tabId);
         filteredTabs = filteredTabs.filter(t => t.id !== tabId);
-
-        
         if (selectedIndex >= filteredTabs.length) {
             selectedIndex = Math.max(0, filteredTabs.length - 1);
         }
-
         if (filteredTabs.length === 0) {
             closeSwitcher();
         } else {
@@ -168,29 +155,21 @@
     }
 
     function handleKeyDown(e) {
-        
         e.stopPropagation();
-
-        
         if (e.key === 'Escape') {
             e.preventDefault();
             closeSwitcher();
-        }
-        else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
             e.preventDefault();
             selectNext();
-        }
-        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
             e.preventDefault();
             selectPrevious();
-        }
-        else if (e.key === 'Enter') {
+        } else if (e.key === 'Enter') {
             e.preventDefault();
             activateSelectedTab();
-        }
-        else if (e.key === 'Tab') {
+        } else if (e.key === 'Tab') {
             e.preventDefault();
-            
             if (e.shiftKey) {
                 selectPrevious();
             } else {
@@ -202,8 +181,6 @@
     function handleKeyUp(e) {
         e.stopPropagation();
         if (!isOpen) return;
-
-        
         if ((e.key === 'Control' || e.key === 'Shift' || e.key === 'Alt' || e.key === 'Meta') && wasCycled) {
             e.preventDefault();
             activateSelectedTab();
@@ -215,12 +192,9 @@
         overlay.id = 'tabflow-switcher-overlay';
         overlay.className = 'tabflow-overlay tabflow-hidden';
 
-        
         overlay.addEventListener('keydown', (e) => e.stopPropagation(), true);
         overlay.addEventListener('keyup', (e) => e.stopPropagation(), true);
         overlay.addEventListener('keypress', (e) => e.stopPropagation(), true);
-
-        
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 closeSwitcher();
@@ -232,15 +206,13 @@
 
         const searchContainer = document.createElement('div');
         searchContainer.className = 'tabflow-search-container';
-
-        
         searchContainer.innerHTML = `
-      <svg class="tabflow-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input type="text" id="tabflow-search-input" placeholder="${switcherTranslations[currentLang].placeholder}" autocomplete="off" />
-    `;
+            <svg class="tabflow-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="tabflow-search-input" placeholder="${switcherTranslations[currentLang].placeholder}" autocomplete="off" />
+        `;
 
         const listContainer = document.createElement('div');
         listContainer.id = 'tabflow-list-container';
@@ -249,18 +221,17 @@
         const footer = document.createElement('div');
         footer.className = 'tabflow-footer';
         footer.innerHTML = `
-      <div class="tabflow-tips">
-        ${switcherTranslations[currentLang].tips}
-      </div>
-      <div class="tabflow-branding">For<span class="tabflow-branding-purple">mat</span></div>
-    `;
+            <div class="tabflow-tips">
+                ${switcherTranslations[currentLang].tips}
+            </div>
+            <div class="tabflow-branding">For<span class="tabflow-branding-purple">mat</span></div>
+        `;
 
         card.appendChild(searchContainer);
         card.appendChild(listContainer);
         card.appendChild(footer);
         overlay.appendChild(card);
 
-        
         const searchInput = searchContainer.querySelector('#tabflow-search-input');
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
@@ -316,10 +287,10 @@
 
         if (filteredTabs.length === 0) {
             listContainer.innerHTML = `
-        <div class="tabflow-no-results">
-          ${switcherTranslations[currentLang].noResults}
-        </div>
-      `;
+                <div class="tabflow-no-results">
+                    ${switcherTranslations[currentLang].noResults}
+                </div>
+            `;
             return;
         }
 
@@ -332,46 +303,41 @@
                 activateSelectedTab();
             });
 
-            
             const cardHeader = document.createElement('div');
             cardHeader.className = 'tabflow-card-header';
 
-            
             const faviconImg = document.createElement('img');
             faviconImg.className = 'tabflow-favicon';
-            faviconImg.src = tab.favIconUrl || 'data:image/svg+xml;utf8,<svg xmlns="http:
+            faviconImg.src = tab.favIconUrl || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>';
             faviconImg.onerror = function() {
-                this.src = 'data:image/svg+xml;utf8,<svg xmlns="http:
+                this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>';
             };
 
             const title = document.createElement('div');
             title.className = 'tabflow-tab-title';
             title.textContent = tab.title;
 
-            
             const closeBtn = document.createElement('button');
             closeBtn.className = 'tabflow-close-btn';
             closeBtn.title = switcherTranslations[currentLang].closeBtnTitle;
             closeBtn.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      `;
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            `;
             closeBtn.addEventListener('click', (e) => closeTab(tab.id, e));
 
             cardHeader.appendChild(faviconImg);
             cardHeader.appendChild(title);
             cardHeader.appendChild(closeBtn);
 
-            
             const cardBody = document.createElement('div');
             cardBody.className = 'tabflow-card-body';
 
             const domain = cleanUrl(tab.url);
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-            
             const previewCenter = document.createElement('div');
             previewCenter.className = 'tabflow-preview-center';
 
@@ -389,7 +355,6 @@
             previewCenter.appendChild(largeFavicon);
             previewCenter.appendChild(domainBadge);
             cardBody.appendChild(previewCenter);
-
 
             if (tab.groupTitle) {
                 const groupBadge = document.createElement('div');
@@ -555,4 +520,3 @@
         }
     }
 })();
-

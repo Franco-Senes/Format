@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Format</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header class="header">
+    <div class="logo-container">
+        <svg class="view-week-icon" viewBox="0 0 24 24" fill="currentColor" style="width: 22px; height: 22px; color: var(--primary-color); transition: color 0.3s ease;">
+            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM8 18H4V6h4v12zm6 0h-4V6h4v12zm6 0h-4V6h4v12z"/>
+        </svg>
+        <span class="logo-text">For<span class="gradient-text">mat</span></span>
+    </div>
+    <div class="status-badge" id="statusBadge">
+        <span class="status-dot"></span>
+        <span class="status-text" id="statusText">Ready</span>
+    </div>
+</header>
+
+<div id="tabHomePanel" class="tab-panel">
+    <main class="main-content">
+        <button id="groupBtn" class="btn btn-primary">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span id="btnGroupText">Organize With AI</span>
+        </button>
+        <div id="LoadingText" class="loading-text hidden">Analyzing tabs...</div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="shortcut-label" id="lblShortcut">Switcher Shortcut:</span>
+            <kbd class="kbd">Ctrl + Shift + Space</kbd>
+        </div>
+    </footer>
+</div>
+
+<div id="tabSettingsPanel" class="tab-panel hidden">
+    <section class="settings-sections">
+        <div class="setting-row">
+            <div class="setting-info">
+                <span class="setting-label" id="lblLangSelect">Language</span>
+            </div>
+            <div class="select-wrapper mini-select">
+                <select id="langInput">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; width: 100%">
+            <span class="setting-label" id="lblThemeColor" style="font-size: 13px;">Accent Theme</span>
+            <div class="color-palette-container">
+                <button class="color-dot" data-color="blue" style="background-color: #8ab4f8;" type="button" title="Blue"></button>
+                <button class="color-dot" data-color="sage" style="background-color: #c5e1a5;" type="button" title="Sage"></button>
+                <button class="color-dot" data-color="purple" style="background-color: #d0bcff;" type="button" title="Purple"></button>
+                <button class="color-dot" data-color="red" style="background-color: #ffb4ab;" type="button" title="Red"></button>
+                <button class="color-dot" data-color="yellow" style="background-color: #fdd835;" type="button" title="Yellow"></button>
+                <button class="color-dot custom-color-btn" id="customColorBtn" data-color="custom" style="background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);" type="button" title="Custom"></button>
+                <input type="color" id="customColorPicker" style="display: none;" value="#1a73e8" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="apiKey" id="lblApiKey">Gemini Api Key</label>
+            <div class="input-wrapper">
+                <input type="password" id="apiKey" placeholder="AIzaSy..."/>
+                <button id="toggleApiVisibility" class="btn-icon" type="button" title="Show/Hide key">
+                    <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+            </div>
+            <span class="help-text" id="lblApiKeyHelp">Get your free key at: <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">https://aistudio.google.com/api-keys</a></span>
+        </div>
+
+        <div class="form-group">
+            <label for="aiInstructions" id="lblAiInstructions">Ai Instructions</label>
+            <div class="input-wrapper" style="flex-direction: column;">
+                <textarea id="aiInstructions" placeholder="AI instructions..."></textarea>
+            </div>
+            <span class="help-text" id="lblAiInstructionsHelp">Add custom rules for the AI grouping.</span>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <span class="setting-label" id="lblAutoGroup">Auto-Grouping</span>
+                <span class="setting-desc" id="lblAutoGroupDesc">Organizes tabs in the background</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="autoGroupingToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="form-group hidden" id="intervalGroup">
+            <label for="intervalInput" id="lblInterval">Grouping Frequency</label>
+            <div class="select-wrapper">
+                <select id="intervalInput">
+                    <option value="5" id="optInt5">Every 5 minutes</option>
+                    <option value="15" id="optInt15" selected>Every 15 minutes</option>
+                    <option value="30" id="optInt30">Every 30 minutes</option>
+                    <option value="60" id="optInt60">Every hour</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top: 16px; text-align: center; width:100%;">
+            <a href="#" id="changeShortcutLink" class="footer-link">Configure Shortcuts</a>
+        </div>
+    </section>
+</div>
+
+<nav class="navigation-bar">
+    <button class="nav-item active" id="navHomeBtn" type="button">
+        <div class="nav-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+        </div>
+        <span class="nav-label" id="navLblHome">Organize</span>
+    </button>
+    <button class="nav-item" id="navSettingsBtn" type="button">
+        <div class="nav-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+        </div>
+        <span class="nav-label" id="navLblSettings">Settings</span>
+    </button>
+</nav>
+
+<script src="popup.js"></script>
+</body>
+</html>

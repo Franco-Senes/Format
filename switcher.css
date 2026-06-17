@@ -1,0 +1,332 @@
+/*Franco Senes - 16/6/2026 - zero.info.bo*/
+#tabflow-switcher-overlay {
+    --tf-font: 'Outfit', system-ui, -apple-system, sans-serif;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--tf-bg-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--tf-font);
+    transition: opacity 0.2s ease;
+}
+
+#tabflow-switcher-overlay.tabflow-hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tabflow-switcher-card {
+    width: 800px;
+    max-width: 90vw;
+    background: var(--tf-bg-card);
+    border-radius: 28px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: tf-scaleUp 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid var(--tf-border);
+}
+
+@keyframes tf-scaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+
+.tabflow-search-container {
+    display: flex;
+    align-items: center;
+    padding: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 12px;
+}
+
+@media (prefers-color-scheme: light) {
+    .tabflow-search-container {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+}
+
+.tabflow-search-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--tf-text-secondary);
+    flex-shrink: 0;
+}
+
+#tabflow-search-input {
+    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: var(--tf-text-primary) !important;
+    font-size: 16px !important;
+    font-family: var(--tf-font) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+#tabflow-search-input::placeholder {
+    color: var(--tf-text-secondary);
+    opacity: 0.7;
+}
+
+
+.tabflow-list-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 16px 20px;
+    gap: 16px;
+    min-height: 180px;
+    scroll-behavior: smooth;
+}
+
+
+.tabflow-list-container::-webkit-scrollbar {
+    height: 6px;
+}
+.tabflow-list-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.tabflow-list-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+}
+.tabflow-list-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tabflow-no-results {
+    padding: 40px;
+    text-align: center;
+    color: var(--tf-text-secondary);
+    font-size: 14px;
+    width: 100%;
+}
+
+
+.tabflow-tab-item {
+    display: flex;
+    flex-direction: column;
+    width: 170px;
+    height: 130px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    cursor: pointer;
+    background: var(--tf-bg-card-elevated);
+    border: 2px solid var(--tf-border);
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.tabflow-tab-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--tf-accent-hover);
+}
+
+
+.tabflow-tab-item.tabflow-active {
+    border-color: var(--tf-accent) !important;
+    background: var(--tf-bg-card-elevated);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--tf-accent);
+}
+
+
+.tabflow-card-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 8px;
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: light) {
+    .tabflow-card-header {
+        background: rgba(0, 0, 0, 0.03);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+}
+
+.tabflow-tab-title {
+    color: var(--tf-text-primary);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.tabflow-favicon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 4px;
+}
+
+
+.tabflow-close-btn {
+    background: transparent !important;
+    border: none !important;
+    color: var(--tf-text-secondary) !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.15s ease !important;
+    opacity: 0;
+}
+
+.tabflow-tab-item:hover .tabflow-close-btn,
+.tabflow-tab-item.tabflow-active .tabflow-close-btn {
+    opacity: 1;
+}
+
+.tabflow-close-btn:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: var(--tf-danger) !important;
+}
+
+.tabflow-close-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+    stroke-width: 2.5 !important;
+}
+
+
+.tabflow-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    width: 100%;
+    position: relative;
+    padding: 6px 10px 10px 10px;
+    user-select: none;
+    box-sizing: border-box;
+    gap: 4px;
+}
+
+.tabflow-preview-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.tabflow-large-favicon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+@media (prefers-color-scheme: light) {
+    .tabflow-large-favicon {
+        background: rgba(0, 0, 0, 0.05);
+    }
+}
+
+.tabflow-domain-badge {
+    font-size: 11px;
+    color: var(--tf-text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: 8px;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (prefers-color-scheme: light) {
+    .tabflow-domain-badge {
+        background: rgba(0, 0, 0, 0.04);
+    }
+}
+
+
+.tabflow-group-badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+.tabflow-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+@media (prefers-color-scheme: light) {
+    .tabflow-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        background: rgba(0, 0, 0, 0.02);
+    }
+}
+
+.tabflow-tips {
+    font-size: 11px;
+    color: var(--tf-text-secondary);
+}
+
+.tabflow-tip-key {
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: var(--tf-text-primary);
+}
+
+@media (prefers-color-scheme: light) {
+    .tabflow-tip-key {
+        background: rgba(0, 0, 0, 0.05);
+    }
+}
+
+.tabflow-branding {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+
+.tabflow-branding-purple {
+    color: var(--tf-accent);
+}
